@@ -1,10 +1,16 @@
-import { Platform} from 'react-native'
-import React, {useContext}from 'react'
+import { Platform,ActivityIndicator} from 'react-native'
+import React, {useContext, useState}from 'react'
 import { Background,AreaInput,Container, SubmitButton, SubmitText } from './style'
 import { AuthContext } from '../../Context/AuthContext'
 
 export default function SignUp() {
-const {user} = useContext(AuthContext)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const {Cadastrar,loading} = useContext(AuthContext)
+
+
 
   return (
     <Background >
@@ -14,18 +20,30 @@ const {user} = useContext(AuthContext)
       >
         <AreaInput
         placeholder="Nome"
+        value={name}
+        onChangeText={(text)=>setName(text)}
         />
         <AreaInput
         placeholder="Email"
+        value={email}
+        onChangeText={(text)=>setEmail(text)}
         />
         <AreaInput
         placeholder="Senha"
+        value={password}
+        onChangeText={(text)=>setPassword(text)}
+        secureTextEntry={true}
+        
         />
         <SubmitButton
-        onPress={()=>{console.log(`Olá ${user.nome}`);
-        }}
+        onPress={()=>Cadastrar(name,password,email)}       
         >
-          <SubmitText>Cadastrar</SubmitText>
+          {loading ? (
+            <ActivityIndicator size={20} color="#fff"/>
+          ):(
+            <SubmitText>Cadastrar</SubmitText>
+          )}
+         
         </SubmitButton>
       </Container>
     </Background>
