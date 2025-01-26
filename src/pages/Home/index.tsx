@@ -1,10 +1,21 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+
+import React,{ useContext } from 'react'
+import { AuthContext } from '../../Context/AuthContext'
+import { Background, Container } from './style'
+import Header from '../../Components/Header'
+
+
+
 
 export default function Home() {
+  const { user, Sair } = useContext(AuthContext)
   return (
-    <View>
-      <Text>Tela Home</Text>
-    </View>
-  )
+    <Background>
+      
+        <Header title="Minhas Movimentações"/>
+        
+
+      
+    </Background>
+      )
 }

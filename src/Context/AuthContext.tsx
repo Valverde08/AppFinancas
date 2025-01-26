@@ -1,7 +1,8 @@
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import React from 'react'
 import api from '../services/services'
 import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 
@@ -13,8 +14,42 @@ export const AuthContext = createContext({})
 export default function AuthProvider({children}) {
     const [user, SetUser] = useState(null)
     const [ loading, setLoading] = useState(false)
+    const [loadingIn, setLoadingIn] = useState(true)
 
     const navigation = useNavigation()
+
+    useEffect(() => {
+
+      async function LoadStorageData() {
+        const storageUser = await AsyncStorage.getItem('@financa:usuario')
+        
+
+        if(storageUser ) {
+
+          const response = await api.get('/me', {
+            headers: {
+              Authorization: `Bearer ${storageUser}`
+            }
+          })
+          .catch((error) => {
+            console.log("Não foi possivel logar o usuario" + error);
+            SetUser(null)
+            
+          })
+
+          
+
+          api.defaults.headers['Authorization'] = `Bearer ${storageUser}`
+          SetUser(response.data)
+          setLoadingIn(false)
+        }
+
+        setLoadingIn(false)
+      }
+
+      LoadStorageData()
+
+    }, []) 
 
     async function Cadastrar(name, password, email) {
         setLoading(true)
@@ -60,6 +95,8 @@ export default function AuthProvider({children}) {
         email
       }
 
+      await AsyncStorage.setItem('@financa:usuario', token)
+
       api.defaults.headers['Authorization'] = `Bearer ${token}`
 
       SetUser({
@@ -75,8 +112,16 @@ export default function AuthProvider({children}) {
       
     }
   }
+
+  async function Sair() {
+    await AsyncStorage.clear().then(() => {
+      SetUser(null)
+    })
+
+
+  }
   return (
-   <AuthContext.Provider value={{signed:!!user, user,Cadastrar,loading,Logar}}>
+   <AuthContext.Provider value={{signed:!!user, user,Cadastrar,loading,Logar,Sair,loadingIn}}>
     {children}
    </AuthContext.Provider>
   )
