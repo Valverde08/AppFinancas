@@ -22,6 +22,7 @@ export default function AuthProvider({children}) {
 
       async function LoadStorageData() {
         const storageUser = await AsyncStorage.getItem('@financa:usuario')
+        console.log(storageUser);
         
 
         if(storageUser ) {
