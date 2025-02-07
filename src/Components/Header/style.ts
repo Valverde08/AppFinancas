@@ -4,8 +4,7 @@ import styled from "styled-components";
 const StatusBarHeight = StatusBar.currentHeight;
 
 export const Header = styled.SafeAreaView`
-    flex: 1;
-    
+    flex: 1;    
     align-items: start;
     justify-content: flex-start;
     margin-left: 15px;

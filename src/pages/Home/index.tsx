@@ -10,7 +10,8 @@ import Icon from '@expo/vector-icons/Feather'
 import HistoricalList from '../../Components/HistoricalList'
 
 import { format } from 'date-fns'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity,Modal } from 'react-native'
+import ModalDate from '../../Components/ModalDate'
 
 
 
@@ -18,16 +19,18 @@ import { TouchableOpacity } from 'react-native'
 export default function Home() {
   const isFocused = useIsFocused()
   const { user, Sair } = useContext(AuthContext)
-
   const [listBalance, setListBalance] = useState([])
-
   const [movements,setMovements] = useState([])
-
   const [date,setDate] = useState(new Date())
+  const [isActive,setIsactive] = useState(true)
+  const [Modalvisible, setModalVisible]  = useState(false)
+
 
   useEffect(() =>{
-    let isActive = true
+    setIsactive(true)
+    
     async function LoadListBalance() {
+      
       const dateaFormated = format(date, 'dd/MM/yyyy')
 
       const receives = await api.get('/receives',{
@@ -47,6 +50,7 @@ export default function Home() {
 
         setMovements(receives.data)
         setListBalance(response.data)
+        setIsactive(false)
       }
 
       
@@ -56,9 +60,25 @@ export default function Home() {
     LoadListBalance()
 
     return () => {
-      isActive = false
+      setIsactive(false)
     }
-  },[isFocused])
+  },[isFocused,movements])
+
+  async function deleteItem(id) {
+
+    try {
+      await api.delete('receives/delete',{
+        params:{
+          item_id:id
+        }
+      })
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+    
+  }
 
 
   return (
@@ -81,7 +101,7 @@ export default function Home() {
         
         />
         <Area>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={()=>setModalVisible(true)}>
             <Icon name='calendar' color='#1d1c1c' size={30}/>
           </TouchableOpacity>
           <Title>Últimas Movimentações</Title>
@@ -91,15 +111,18 @@ export default function Home() {
         data={movements}
         keyExtractor={(item)=> item.id}
         renderItem={({item})=>{
-          return(<HistoricalList data={item}/>)
+          return(<HistoricalList data={item} deleteItem={deleteItem}/>)
         }}
         showsVerticalScrollIndicator={false}
         contentContainer={{paddingBottom:24}}
         />
 
-        <BtnLogOut onPress={Sair}>
-          <Title>Sair</Title>
-        </BtnLogOut>
+        <Modal visible={Modalvisible} animationType='fade' transparent={true}>
+          <ModalDate
+          setVisible={()=> setModalVisible(false)}
+          />
+        </Modal>
+        
         
         
 

@@ -3,8 +3,8 @@ import styled from "styled-components";
 export const Container = styled.View`
     background-color:#f0f4ff;
     margin-top:14px;
-    margin-left:14px;
-    margin-right:14px;
+    margin-right: 14px;
+    margin-left: 14px;
     padding:14px;
     gap:14px;
     border-radius:5px;
@@ -23,16 +23,17 @@ export const TypeCOntainer = styled.View`
     
 
 `
+
 export const HistoricalText = styled.Text`
     font-size:24px;
-    font-weight:600
+    font-weight:600;
 
 `
 
 export const TypelText = styled.Text`
     font-size:16px;
     font-weight:600;
-    color:#fff
+    color:#fff;
 
 `
 

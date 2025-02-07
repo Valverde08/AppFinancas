@@ -1,5 +1,6 @@
 
 import React, { useMemo } from 'react'
+import { Alert, TouchableWithoutFeedback } from 'react-native'
 import { Container,
    HistoricalText,
   TypeCOntainer,
@@ -8,7 +9,8 @@ import { Container,
 
 import Icon from '@expo/vector-icons/AntDesign'
 
-export default function HistoricalList({data}) {
+
+export default function HistoricalList({data, deleteItem}) {
 
   const labelType = useMemo(()=>{
     if(data.type === 'receita'){
@@ -28,16 +30,44 @@ export default function HistoricalList({data}) {
 
   },[])
 
+  function confirmeDeletion(){
+    Alert.alert(
+       'Atenção',
+       'Deseja apagar registro ?' ,
+       [
+        {
+          text:'Cancelar',
+          style:'cancel'
+        },
+        {
+          text:'Continuar',
+          onPress: () => deleteItem(data.id)
+        }
+       ]
+
+    )
+  }
+
   return (
-    <Container>
-      <TypeCOntainer bg={labelType.color}>
-        <Icon name={labelType.icon} size={24} color={'#fff'}/>
-        <TypelText>{labelType.label}</TypelText>
+    <TouchableWithoutFeedback onLongPress={confirmeDeletion}>
+      <Container>
+      
+
+        <TypeCOntainer bg={labelType.color}>
+          
+          <Icon name={labelType.icon} size={24} color={'#fff'}/>
+          <TypelText>{labelType.label}</TypelText>
 
 
-      </TypeCOntainer>
-        <HistoricalText>R$ {data.value}</HistoricalText>
+        </TypeCOntainer>
+          <HistoricalText>R$ {data.value}</HistoricalText>
+
+     
+      
         
     </Container>
+
+    </TouchableWithoutFeedback>
+    
   )
 }

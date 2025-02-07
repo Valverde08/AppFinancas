@@ -40,8 +40,7 @@ export const Area = styled.View`
     padding-top: 14px;
     padding-left: 14px;
     margin-top: 14px;
-    margin-left: 14px;
-    margin-right: 14px;
+    
     flex-direction: row;
     justify-items: center;
     align-items: baseline;
